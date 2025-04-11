@@ -1,112 +1,195 @@
-import org.w3c.dom.Node;
-
-import java.util.Iterator;
-
-public class MyLinkedList implements MyList {
-    private class MyNode{
-        Object item;
+public class MyLinkedList<T extends Comparable<T>> implements MyList<T> {
+    private class MyNode {
+        T data;
         MyNode next;
-        MyNode previous;
+        MyNode prev;
 
-
+        MyNode(T data) {
+            this.data = data;
+        }
     }
-    private Node head;
-    private Node tail;
+
+    private MyNode head;
+    private MyNode tail;
     private int size;
 
-
-    @Override
-    public void add(Object item) {
-
+    public MyLinkedList() {
+        head = null;
+        tail = null;
+        size = 0;
     }
 
-    @Override
-    public void set(int index, Object item) {
-
+    public void add(T item) {
+        addLast(item);
     }
 
-    @Override
-    public void add(int index, Object item) {
-
+    public void addFirst(T item) {
+        MyNode newNode = new MyNode(item);
+        if (head == null) {
+            head = tail = newNode;
+        } else {
+            newNode.next = head;
+            head.prev = newNode;
+            head = newNode;
+        }
+        size++;
     }
 
-    @Override
-    public void addFirst(Object item) {
-
+    public void addLast(T item) {
+        MyNode newNode = new MyNode(item);
+        if (tail == null) {
+            head = tail = newNode;
+        } else {
+            tail.next = newNode;
+            newNode.prev = tail;
+            tail = newNode;
+        }
+        size++;
     }
 
-    @Override
-    public void addLast(Object item) {
-
+    public void set(int index, T item) {
+        checkIndex(index);
+        MyNode current = getNode(index);
+        current.data = item;
     }
 
-    @Override
-    public Object get(int index) {
-        return null;
+    public void add(int index, T item) {
+        if (index == 0) {
+            addFirst(item);
+            return;
+        } else if (index == size) {
+            addLast(item);
+            return;
+        }
+
+        checkIndex(index);
+        MyNode nextNode = getNode(index);
+        MyNode prevNode = nextNode.prev;
+
+        MyNode newNode = new MyNode(item);
+        newNode.next = nextNode;
+        newNode.prev = prevNode;
+        prevNode.next = newNode;
+        nextNode.prev = newNode;
+
+        size++;
     }
 
-    @Override
-    public Object getFirst() {
-        return null;
+    public T get(int index) {
+        checkIndex(index);
+        return getNode(index).data;
     }
 
-    @Override
-    public Object getLast() {
-        return null;
+    public T getFirst() {
+        if (size == 0) ;
+        return head.data;
     }
 
-    @Override
+    public T getLast() {
+        if (size == 0) ;
+        return tail.data;
+    }
+
     public void remove(int index) {
-
+        checkIndex(index);
+        MyNode nodeToRemove = getNode(index);
+        removeNode(nodeToRemove);
     }
 
-    @Override
     public void removeFirst() {
-
+        if (size == 0) return;
+        removeNode(head);
     }
 
-    @Override
     public void removeLast() {
-
+        if (size == 0) return;
+        removeNode(tail);
     }
 
-    @Override
+    private void removeNode(MyNode node) {
+        if (node.prev != null) {
+            node.prev.next = node.next;
+        } else {
+            head = node.next;
+        }
+
+        if (node.next != null) {
+            node.next.prev = node.prev;
+        } else {
+            tail = node.prev;
+        }
+
+        size--;
+    }
+
     public void sort() {
+        if (size < 2) return;
 
+        for (MyNode i = head; i != null; i = i.next) {
+            for (MyNode j = i.next; j != null; j = j.next) {
+                if (i.data.compareTo(j.data) > 0) {
+                    T temp = i.data;
+                    i.data = j.data;
+                    j.data = temp;
+                }
+            }
+        }
     }
 
-    @Override
-    public int indexOf(Object object) {
-        return 0;
+    public int index0f(Object object) {
+        int index = 0;
+        for (MyNode current = head; current != null; current = current.next) {
+            if (current.data.equals(object)) return index;
+            index++;
+        }
+        return -1;
     }
 
-    @Override
     public int lastIndex0f(Object object) {
-        return 0;
+        int index = size - 1;
+        for (MyNode current = tail; current != null; current = current.prev) {
+            if (current.data.equals(object)) return index;
+            index--;
+        }
+        return -1;
     }
 
-    @Override
     public boolean exists(Object object) {
-        return false;
+        return index0f(object) != -1;
     }
 
-    @Override
     public Object[] toArray() {
-        return new Object[0];
+        Object[] array = new Object[size];
+        int i = 0;
+        for (MyNode current = head; current != null; current = current.next) {
+            array[i++] = current.data;
+        }
+        return array;
     }
 
-    @Override
     public void clear() {
-
+        head = tail = null;
+        size = 0;
     }
 
-    @Override
     public int size() {
-        return 0;
+        return size;
     }
 
-    @Override
-    public Iterator iterator() {
-        return null;
+    private void checkIndex(int index) {
+        if (index < 0 || index >= size)
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+    }
+
+    private MyNode getNode(int index) {
+        MyNode current;
+        if (index < size / 2) {
+            current = head;
+            for (int i = 0; i < index; i++) current = current.next;
+        } else {
+            current = tail;
+            for (int i = size - 1; i > index; i--) current = current.prev;
+        }
+        return current;
     }
 }

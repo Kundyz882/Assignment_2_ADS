@@ -1,101 +1,140 @@
-import java.util.Iterator;
 
-public class MyArrayList implements MyList {
-    private Object[] list;
-    private int size;
+public class MyArrayList<T extends Comparable<T>> implements MyList<T> {
+    private Object[] elements;
+    private int length;
+    private static final int capacity = 10;
 
-    @Override
-    public void add(Object item) {
-
+    public MyArrayList() {
+        elements = new Object[capacity];
+        length = 0;
     }
 
-    @Override
-    public void set(int index, Object item) {
-
+    public void add(T element) {
+        if (length == elements.length) {
+            increaseCapacity();
+        }
+        elements[length++] = element;
     }
 
-    @Override
-    public void add(int index, Object item) {
 
+    private void increaseCapacity() {
+        Object[] newElements = new Object[elements.length * 2];
+        for (int i = 0; i < elements.length; i++) {
+            newElements[i] = elements[i]; //upcasting
+        }
+        elements = newElements;
     }
 
-    @Override
-    public void addFirst(Object item) {
 
+
+    public void set(int index, T item) {
+        checkIndex(index);
+        elements[index] = item;
     }
 
-    @Override
-    public void addLast(Object item) {
-
+    public void add(int index, T item) {
+        if (index < 0 || index > length) throw new IndexOutOfBoundsException();
+        increaseCapacity();
+        for (int i = length; i > index; i--) {
+            elements[i] = elements[i - 1];
+        }
+        elements[index] = item;
+        length++;
     }
 
-    @Override
-    public Object get(int index) {
-        return null;
+
+    public void addFirst(T item) {
+        add(0, item);
     }
 
-    @Override
-    public Object getFirst() {
-        return null;
+    public void addLast(T item) {
+        add(item);
     }
 
-    @Override
-    public Object getLast() {
-        return null;
+    public T get(int index) {
+        checkIndex(index);
+        return (T) elements[index];
     }
 
-    @Override
+    public T getFirst() {
+        return get(0);
+    }
+
+    public T getLast() {
+        return get(length - 1);
+    }
+
     public void remove(int index) {
+        checkIndex(index);
+        for (int i = index; i < length - 1; i++) {
+            elements[i] = elements[i + 1];
+        }
 
     }
 
-    @Override
     public void removeFirst() {
-
+        remove(0);
     }
 
-    @Override
     public void removeLast() {
-
+        remove(length - 1);
     }
 
-    @Override
     public void sort() {
-
+        for (int i = 0; i < length - 1; i++) {
+            for (int j = 0; j < length - i - 1; j++) {
+                T a = get(j);
+                T b = get(j + 1);
+                if (a.compareTo(b) > 0) {
+                    T temp = a;
+                    elements[j] = b;
+                    elements[j + 1] = temp;
+                }
+            }
+        }
     }
 
-    @Override
-    public int indexOf(Object object) {
-        return 0;
+    public int index0f(Object object) {
+        for (int i = 0; i < length; i++) {
+            if (elements[i].equals(object)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
-    @Override
     public int lastIndex0f(Object object) {
-        return 0;
+        for (int i = length - 1; i >= 0; i--) {
+            if (elements[i].equals(object)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
-    @Override
     public boolean exists(Object object) {
-        return false;
+        return index0f(object) != -1;
     }
 
-    @Override
     public Object[] toArray() {
-        return new Object[0];
+        Object[] result = new Object[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = elements[i];
+        }
+        return result;
     }
 
-    @Override
     public void clear() {
-
+        elements = new Object[capacity];
+        length = 0;
     }
 
-    @Override
     public int size() {
-        return 0;
+        return length;
     }
 
-    @Override
-    public Iterator iterator() {
-        return null;
+    private void checkIndex(int index) {
+        if (index < 0 || index >= length)
+            throw new IndexOutOfBoundsException("Index: " + index + " not found");
     }
 }

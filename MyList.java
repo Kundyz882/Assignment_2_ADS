@@ -1,4 +1,4 @@
-public interface MyList <T> extends Iterable<T> {
+public interface MyList<T> {
     void add(T item);
     void set(int index, T item) ;
     void add(int index, T item) ;
@@ -9,11 +9,11 @@ public interface MyList <T> extends Iterable<T> {
     T getLast();
     void remove(int index) ;
     void removeFirst() ;
-    void removeLast();
+    void removeLast() ;
     void sort();
-    int indexOf(Object object);
+    int index0f(Object object);
     int lastIndex0f(Object object);
-    boolean exists(Object object);
+    boolean exists(Object object) ;
     public Object[] toArray();
     void clear();
     int size();
