@@ -1,4 +1,4 @@
-public class MyHeap<T extends Comparable<T>> {
+public class MyMinHeap<T extends Comparable<T>> {
     private MyArrayList<T> heap = new MyArrayList<>();
 
     public void add(T item) {
@@ -13,6 +13,11 @@ public class MyHeap<T extends Comparable<T>> {
         heap.remove(heap.size() - 1);
         siftDown(0);
         return min;
+    }
+
+    public T getMin() {
+        if (heap.size() == 0) throw new RuntimeException("Empty heap");
+        return heap.get(0);
     }
 
     private void siftUp(int index) {
