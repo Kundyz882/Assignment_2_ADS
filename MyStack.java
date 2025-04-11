@@ -13,10 +13,12 @@ public class MyStack<T extends Comparable<T>> {
     }
 
     public T peek() {
+
         return list.getLast();
     }
 
     public boolean isEmpty() {
+
         return list.size() == 0;
     }
 }
